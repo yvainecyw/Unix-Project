@@ -1,0 +1,237 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <title>Yvaine－UNIX HW07(2) 後端版 C gcd.cgi</title>
+  <link href="https://icons.iconarchive.com/icons/alex-t/splash-of-fruit/256/button-apple-icon.png" rel="icon"
+    type="image/x-icon">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <noscript>
+    <link rel="stylesheet" href="assets/css/noscript.css" />
+  </noscript>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+
+<body class="is-preload">
+  <div id="wrapper">
+    <header id="header">
+      <div class="inner">
+        <a href="index.html" class="logo">
+          <i class="fa fa-home" aria-hidden="true"></i>
+          <span class="title">HOME</span>
+        </a>
+
+        <a id="theme-toggle" class="icon darkmodebtn">
+          <div class="dark fa fa-sun"></div>
+          <div class="light fa fa-moon"></div>
+        </a>
+
+        <nav>
+          <ul>
+            <li><a href="#menu"></a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <nav id="menu">
+      <h2>UNIX 作業</h2>
+      <ul>
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="hw0.html">作業 00 (index.html)</a></li>
+        <li><a href="hw1.html">作業 01 (gcd.c)</a></li>
+        <li><a href="hw2.html">作業 02 (gcd.sh)</a></li>
+        <li><a href="hw3.html">作業 03 (unixstd2019.txt)</a></li>
+        <li><a href="hw4_sweb.html">作業 04 (學生網頁)</a></li>
+        <li><a href="hw5.html">作業 05 (checkid.cgi?unixstd2019.txt)</a></li>
+        <li><a href="hw6_shis.html">作業 06 (學生 history.txt)</a></li>
+        <li><a href="hw7_javascript_op.html">作業 07(1) (前端版 Java gcd.js)</a></li>
+        <li><a href="hw7_c_op.html">作業 07(2) (後端版 C gcd.cgi)</a></li>
+        <li><a href="hw7_php.html" target="_blank">作業 07(3) (first.php)</a></li>
+        <li><a href="hw8_shell_op.html">作業 08(1) (後端版 Shell shgcd.cgi)</a></li>
+        <li><a href="hw8_php_op.html">作業 08(2) (gcd.php)</a></li>
+        <li><a href="homework.txt" target="_blank">homework.txt</i></a></li>
+        <li><a href="history.txt" target="_blank">history.txt</i></a></li>
+      </ul>
+    </nav>
+
+    <div id="main">
+      <div class="inner">
+
+        <h1>後端版 C gcd.cgi 操作模式</h1>
+
+        <a href="hw7_c.html" style="text-align:right">
+          <h4>點擊查看此頁面執行結果</h4>
+        </a>
+
+        <h3>1. 操作模式：</h3>
+
+        <p>mkdir -m 755 public_html/cgi-bin：新增 cgi-bin 子目錄<br>
+          PATH=/usr/local/bin:$PATH：更改路徑<br>
+          gcc -o gcd.cgi gcd.c：將 .c 輸出為 .cgi</p>
+
+        <h3>2. 執行結果：</h3>
+
+        <p>第一組：4<br>
+          第二組：12<br>
+          gcd(4, 12) = 4<br>
+          lcm(4, 12) = 12</p>
+
+        <div class="code">
+          <pre><code>
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+typedef struct
+{
+  char *name;
+  char *val;
+} input_struct;
+
+char *ReadStdin(FILE *f,char stop,int *len);
+void AddToSpace(char *str);
+void Convert(char *url);
+char *ReadData(char *line,char stop);
+int gcd(int x, int y);
+
+main()
+{
+  input_struct inputs[3000];
+  register int i;
+  int len;
+  char *remote_addr;
+  
+  int g, x, y;
+
+  len = atoi(getenv("CONTENT_LENGTH"));
+  remote_addr=getenv("REMOTE_ADDR"); 
+
+  for (i=0;len&&(!feof(stdin));i++)
+  {
+    inputs[i].val=ReadStdin(stdin,'&',&len);
+    AddToSpace(inputs[i].val);
+    Convert(inputs[i].val);
+    inputs[i].name=ReadData(inputs[i].val,'='); 
+  }
+  
+  printf("Content-type:text/html\n\n");
+  x = atol(inputs[0].val);
+  y = atol(inputs[1].val);
+  g = gcd(x, y);
+  printf("gcd(%d, %d) = %d&lt;BR&gt;", x, y, g);
+  printf("lcm(%d, %d) = %d&lt;BR&gt;", x, y, (x*y)/g);
+}
+
+int gcd(int x, int y)
+{
+  int r;
+  while(1)
+  {
+    (x > y)? (r = x = x % y) : (r = y = y % x);
+    if (x == 0) return y;
+    if (y == 0) return x;
+    if (r == 1) return 1;
+  }
+}
+
+char *ReadStdin(FILE *f,char stop,int *len)
+{
+  int wsize;
+  char *word;
+  int x;
+  
+  wsize=102400;
+  x=0;
+  word=(char *) malloc(sizeof(char) * (wsize+1));
+  
+  while (1)
+  {
+    word[x]=(char)fgetc(f);
+    if (x==wsize) 
+    {
+      word[x+1]='\0';
+      wsize+=102400; 
+      word=(char *)realloc(word,sizeof(char)*(wsize+1));  
+    }
+    --(*len);
+    if ((word[x] == stop)||(feof(f))||(!(*len))) 
+    {
+      if (word[x] != stop)
+        x++;
+      word[x] = '\0';
+      return word;
+    }
+    ++x;
+  }
+}          
+
+
+char *ReadData(char *line,char stop)
+{
+  int i=0,j;
+  char *word=(char *) malloc(sizeof(char) * (strlen(line)+1));
+  for (i=0;((line[i])&&(line[i] != stop));i++)
+    word[i]=line[i];
+  word[i]='\0';
+
+  if (line[i])
+    ++i;
+    j=0;
+    
+  while (line[j++] = line[i++]);
+
+  return word;
+}
+
+char ConvertToHex(char *change)
+{
+  register char hexdigit;
+  
+  hexdigit=(change[0]>='A' ? ((change[0] & 0xdf)-'A')+10 : (change[0]-'0'));
+  hexdigit *=16;
+  hexdigit+=(change[1]>='A' ? ((change[1] & 0xdf)-'A')+10 : (change[1]-'0'));
+  return(hexdigit);
+}
+
+void Convert(char *data)
+{
+  register int i,j;
+  
+  for (i=0,j=0  ;data[j];++i,++j)
+  {
+    if ((data[i]=data[j]) == '%')
+    {
+      data[i]=ConvertToHex(&data[j+1]);
+      j+=2;
+    }
+  }
+  data[i]='\0';
+}
+
+void AddToSpace(char *str) 
+{
+  register int i;
+  
+  for (i=0;str[i];i++)
+    if (str[i]=='+')
+      str[i] = ' ';
+}
+					</code></pre>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/browser.min.js"></script>
+  <script src="assets/js/breakpoints.min.js"></script>
+  <script src="assets/js/util.js"></script>
+  <script src="assets/js/main.js"></script>
+
+</body>
+
+</html>

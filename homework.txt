@@ -1,0 +1,639 @@
+﻿-----------作業00 (index.html)---------
+操作模式：
+
+方法1.
+  用 PuTTY 進入 myweb.fcu.edu.tw
+  使用個人 NID 帳號及密碼登入，並目錄切換至 public_html
+  用 vi 建立並編輯(i、x) index.html 檔，存檔之後離開(:wq!)
+  成功建立網頁
+
+方法2.
+  在檔案總管輸入 ftp://myweb.fcu.edu.tw
+  操作個人 NID 帳號及密碼登入
+  編輯 HTML 程式碼於任一檔案中(如記事本)
+  修改檔名：index.html，檔案類型：所有檔案 (*.*)，存檔內碼：utf-8
+  存檔後上傳於 public_html
+  成功建立網頁
+
+
+
+-------------作業01 (gcd.c)------------
+操作模式：
+  在指令列輸入 vi gcd.c：用 vi 指令編輯 gcd.c 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+  在指令列輸入 gcc -c gcd.c
+  在指令列輸入 gcc -o gcd.exe gcd.c
+  在指令列輸入 ./gcd.exe
+  輸入兩個數字求得答案
+
+執行結果：
+  輸入兩數:4 12
+  GCD:4
+
+程式碼：
+#include <stdio.h>
+
+int gcd(int m,int n){
+	while(n!=0){
+		int r=m%n;
+		m=n;
+		n=r;
+	}
+	return m;
+}
+
+int main(int argc, char *argv[]) {
+	int m,n;
+	printf("輸入兩數:");
+	scanf("%d %d",&m,&n);
+	printf("GCD:%d\n",gcd(m,n));
+	return 0;
+}
+
+
+
+------------作業02 (gcd.sh)------------
+方法1.
+  操作模式：
+    在指令列輸入 vi gcd.sh：用 vi 編輯 gcd.sh 檔
+    用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+    在指令列輸入 chmod 755 gcd.sh：增加執行權限
+    在指令列輸入 ./gcd.sh：執行gcd.sh
+    enter two number to found GCD 輸入兩個數字
+    first number: 輸入第一個數字
+    second number: 輸入第二個數字
+    gcd of two number is 答案
+
+  執行結果：
+    enter two number to found GCD
+    first number: 4
+    second number: 12
+    gcd of two number is 4
+
+  程式碼：
+    #!/bin/bash
+    echo "enter two number to found GCD"
+    read -p "first number: " num1
+    read -p "second number: " num2
+    while [ "$num2" != "0" ]
+    do							
+       r=$(($num1%$num2))
+       num1=$num2
+       num2=$r								
+    done
+    echo "gcd of two number is $num1"
+
+方法2.
+  操作模式：
+    在指令列輸入 vi gcd2.sh：用 vi 編輯 gcd2.sh 檔
+    用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+    在指令列輸入 chmod 755 gcd2.sh：增加執行權限
+    在指令列輸入 ./gcd.sh：執行gcd2.sh
+    ./gcd.sh 接著輸入兩個數字
+    gcd of two number is 答案
+
+  執行結果：
+    ./gcd.sh 4 12
+    gcd of two number is 4
+
+  程式碼：
+    #!/bin/bash
+    ARGS=2
+    E_BADARGS=85
+
+    if [ $# -ne "$ARGS" ]
+    then
+    echo "Usage: `basename $0` first-number second-number"
+    exit $E_BADARGS
+    fi
+
+    gcd ()
+    {
+      num1=$1
+      num2=$2
+      r=1
+
+      until [ "$r" -eq 0 ]
+      do
+        let "r = $num1 % $num2"
+        num1=$num2
+        num2=$r
+      done
+    }
+
+    gcd $1 $2
+    echo "gcd of two number is $num1"
+    exit 0
+
+
+
+--------作業03 (unixstd2019.txt)-------
+方法1.
+  操作模式：
+    在指令列輸入 t=/home/staffs/kklin/public_html：將 t 設為老師目錄檔路徑
+    在指令列輸入 s=/jws/home/students/d/06/d0611074：將 s 設為自己的目錄檔路徑
+    在指令列輸入 cp $t/unixstd2019.txt $s/unixstd2019.txt：到老師的資料庫撈資料至自己的目錄下
+    ( ----- 若點名檔中的學號資料不完整，繼續執行以下動作↓ ----- )
+    在指令列輸入 vi unixstd2019.txt：用 vi 編輯 unixstd2019.txt 檔
+    用 vi 顯示文字檔行號(:set nu)，編輯(i)文字檔，存檔之後離開(:wq!)
+
+  執行結果：
+    產生學生學號文字檔 (unixstd2019.txt)
+
+方法2.(只能產生同時上線之學生學號文字檔)
+  操作模式:
+    在指令列輸入 vi unixstd2019.sh：用 vi 編輯 unixstd2019.sh 檔
+    用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+    在指令列輸入 chmod 755 unixstd2019.sh：增加執行權限
+    在指令列輸入 ./unixstd2019.sh：執行 unixstd2019.sh
+
+  執行結果：
+    /student/iecs/1072: No such file or directory
+
+  程式碼：
+  #!/bin/bash
+  p="/student/iecs/1072"
+  std=$(ls $p | sort)
+  for s in $std
+  do
+     if [ -e "$p/$s/id.txt" ]
+     then 
+        cat "$p/$s/id.txt" >> unixstd2019.txt
+     else
+        echo "not exist : $s " >> tmp.txt
+     fi
+  done 
+  cat tmp.txt >> unixstd2019.txt
+
+
+
+
+--------作業04 (學生網頁/unixstd2019.html)------
+操作模式：
+  在指令列輸入 vi std2019.sh：用 vi 編輯 std2019.sh 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+  在指令列輸入 chmod 755 std2019.sh：增加執行權限
+  在指令列輸入 ./std2019.sh：執行 std2019.sh
+  在指令列輸入 ./std2019.sh > public_html/unixstd2019.html：執行 std2019.sh 並 IO 轉向輸出 unixstd2019.html
+
+執行結果：
+  產生 std2019.sh：建立 unixstd2019.html
+  產生 unixstd2019.html：依據學號觀賞修課學生的個人網頁
+
+程式碼：
+#!/bin/bash
+echo '<html>'
+echo '<head>'
+echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+echo '<title>Yvaine－UNIX HW04 學生網頁</title>'
+echo '</head>'
+echo ''
+echo '<body>'
+echo '<h3>UNIX ==> 2019/03/12, IECS! (By. D0611074)</h3><hr>'
+std=$(cat unixstd2019.txt)
+p="http://myweb.fcu.edu.tw/~"
+n=1
+for a in $std
+do
+	echo "*** <a href=$p$a target="_blank"> $n </a>"
+	n=$(($n + 1))
+	r=$(($n % 10))
+	if [ $r -eq 1 ]
+	then
+		echo "<br> <br>"
+	fi
+done
+echo '<hr>'
+echo '</body>'
+echo ''
+echo '</html>'
+exit 0
+
+
+
+--------作業05 (checkid.cgi?unixstd2019.txt)------
+操作模式：
+  在指令列輸入 vi checkid.cgi：用 vi 編輯 checkid.cgi 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+  在指令列輸入 chmod +x checkid.cgi：增加執行權限
+  cp unixstd2019.txt 到 cgi-bin：copy HOME 文字檔到 cgi-bin 子目錄
+
+執行結果：
+  產生 checkid.cgi 點名檔：CGI「?」後的字串為傳遞給伺服器端的資料，會放至 QUERY_STRING 環境變數裡，CGI 經由 QUERY_STRING 讀取送入資料。
+
+程式碼：
+#!/bin/bash
+echo "Content-type: text/html"
+echo ""
+echo '<html>'
+echo '<head>'
+echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+echo '<title> 點名系統 ! </title>'
+echo '</head>'
+echo '<body>'
+echo '<h3>' 
+echo '<br>'
+echo "QUERY_STRING = $QUERY_STRING !"
+echo '</h3>'
+student=$(cat "$QUERY_STRING")
+online=$(who | cut -c 1-8 | sort -u )
+exist=0
+n=0
+echo "實到名單：<br>"
+for o in $online
+do
+    seat_num=0
+    for s in $student
+    do
+         seat_num=$(($seat_num+1))
+         if [ "$o" == "$s" ]; then
+            n=$(($n+1)) 
+            echo "座號:$seat_num 學號:$o<br>"
+         fi
+    done
+done
+echo "上課人數:$n<br>"
+seat_num=0
+n=0
+echo "缺席名單:<br>"
+for s in $student
+do
+    seat_num=$(($seat_num+1))
+   for o in $online
+   do
+      if [ "$s" == "$o" ]; then
+         exist=1
+         break
+      fi   
+   done
+   if [ "$exist" == 0 ]; then
+      echo "座號:$seat_num 學號:$s<br>"
+      n=$(($n+1))
+   fi
+   exist=0
+done
+echo "缺席人數:$n<br>"
+exit 0
+
+
+
+-------------作業06 (學生 history.txt)------------
+操作模式：
+  在指令列輸入 cd public_html/cgi-bin：切換目錄至 cgi-bin 子目錄
+  在指令列輸入 vi stdhistory.cgi：用 vi 編輯 stdhistory.cgi 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+  在指令列輸入 chmod +x stdhistory.cgi：增加執行權限
+
+執行結果：
+  產生學生 history.txt link (若學生沒建 history.txt 則不產生 link)
+
+程式碼：
+#!/bin/bash
+echo "Content-type: text/html"
+echo ""
+echo '<html>'
+echo '<head>'
+echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+echo '<title>Yvaine－UNIX HW06 學生 history.txt</title>'
+echo '</head>'
+echo '<body>'
+std=$(cat unixstd2019.txt)
+p="http://myweb.fcu.edu.tw/~"
+s=/home/students/d
+n=1
+for a in $std
+do
+   num=$(echo $a | cut -c 2-3)
+   loc=$s/$num/$a/public_html/history.txt
+   echo "***"
+   if [ -f "$loc" ]; then
+      echo "<a href=$p$a/history.txt target="_blank">$n : $a</a>"
+   else
+      echo "$n : $a"
+   fi
+   n=$(($n + 1))
+   r=$(($n % 10))
+   if [ $r -eq 1 ]; then
+      echo "<br> <br>"
+   fi
+done
+echo '</body>'
+echo '</html>'
+exit 0
+
+
+
+
+----------作業07(1) (前端版 Javascript gcd.js)----------
+操作模式：
+  在指令列輸入 vi gcd.js：用 vi 編輯 gcd.js 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+  在 HTML 新增 <script> 引用 gcd.js CODE
+
+執行結果：
+  第一組：4
+  第二組：12
+  最大公因數：4
+  最小公倍數：12
+
+程式碼：
+function calculate(form) {
+    if (!isNaN(form.data1.value) && !isNaN(form.data2.value) && form.data1.value > 0 && form.data2.value > 0) {
+        document.getElementById('result1').innerHTML = "最大公因數 : " + gcd(parseInt(form.data1.value), parseInt(form.data2.value))
+        document.getElementById('result2').innerHTML = "最小公倍數 : " + lcm(parseInt(form.data1.value), parseInt(form.data2.value))
+    }
+    else {
+        document.getElementById('result1').innerHTML = "請輸入正整數"
+        document.getElementById('result2').innerHTML = "備註：正整數為大於 0 的整數"
+    }
+}
+
+function gcd(m, n) {
+    return (n == 0 ? m : gcd(n, m % n));
+}
+
+function lcm(mm, nn) {
+    return mm * nn / gcd(mm, nn);
+}
+
+
+
+-----------作業07(2) (後端版 C gcd.cgi)-----------
+操作模式：
+  mkdir -m 755 public_html/cgi-bin：新增 cgi-bin 子目錄
+  PATH=/usr/local/bin:$PATH：更改路徑
+  gcc -o gcd.cgi gcd.c：將 .c 輸出為 .cgi
+
+執行結果：
+  第一組：4
+  第二組：12
+  gcd(4, 12) = 4
+  lcm(4, 12) = 12
+
+程式碼：
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+typedef struct
+{
+  char *name;
+  char *val;
+} input_struct;
+
+char *ReadStdin(FILE *f,char stop,int *len);
+void AddToSpace(char *str);
+void Convert(char *url);
+char *ReadData(char *line,char stop);
+int gcd(int x, int y);
+
+main()
+{
+  input_struct inputs[3000];
+  register int i;
+  int len;
+  char *remote_addr;
+  
+  int g, x, y;
+
+  len = atoi(getenv("CONTENT_LENGTH"));
+  remote_addr=getenv("REMOTE_ADDR"); 
+
+  for (i=0;len&&(!feof(stdin));i++)
+  {
+    inputs[i].val=ReadStdin(stdin,'&',&len);
+    AddToSpace(inputs[i].val);
+    Convert(inputs[i].val);
+    inputs[i].name=ReadData(inputs[i].val,'='); 
+  }
+  
+  printf("Content-type:text/html\n\n");
+  x = atol(inputs[0].val);
+  y = atol(inputs[1].val);
+  g = gcd(x, y);
+  printf("gcd(%d, %d) = %d<BR>", x, y, g);
+  printf("lcm(%d, %d) = %d<BR>", x, y, (x*y)/g);
+}
+
+int gcd(int x, int y)
+{
+  int r;
+  while(1)
+  {
+    (x > y)? (r = x = x % y) : (r = y = y % x);
+    if (x == 0) return y;
+    if (y == 0) return x;
+    if (r == 1) return 1;
+  }
+}
+
+char *ReadStdin(FILE *f,char stop,int *len)
+{
+  int wsize;
+  char *word;
+  int x;
+  
+  wsize=102400;
+  x=0;
+  word=(char *) malloc(sizeof(char) * (wsize+1));
+  
+  while (1)
+  {
+    word[x]=(char)fgetc(f);
+    if (x==wsize) 
+    {
+      word[x+1]='\0';
+      wsize+=102400; 
+      word=(char *)realloc(word,sizeof(char)*(wsize+1));  
+    }
+    --(*len);
+    if ((word[x] == stop)||(feof(f))||(!(*len))) 
+    {
+      if (word[x] != stop)
+        x++;
+      word[x] = '\0';
+      return word;
+    }
+    ++x;
+  }
+}          
+
+
+char *ReadData(char *line,char stop)
+{
+  int i=0,j;
+  char *word=(char *) malloc(sizeof(char) * (strlen(line)+1));
+  for (i=0;((line[i])&&(line[i] != stop));i++)
+    word[i]=line[i];
+  word[i]='\0';
+
+  if (line[i])
+    ++i;
+    j=0;
+    
+  while (line[j++] = line[i++]);
+
+  return word;
+}
+
+char ConvertToHex(char *change)
+{
+  register char hexdigit;
+  
+  hexdigit=(change[0]>='A' ? ((change[0] & 0xdf)-'A')+10 : (change[0]-'0'));
+  hexdigit *=16;
+  hexdigit+=(change[1]>='A' ? ((change[1] & 0xdf)-'A')+10 : (change[1]-'0'));
+  return(hexdigit);
+}
+
+void Convert(char *data)
+{
+  register int i,j;
+  
+  for (i=0,j=0  ;data[j];++i,++j)
+  {
+    if ((data[i]=data[j]) == '%')
+    {
+      data[i]=ConvertToHex(&data[j+1]);
+      j+=2;
+    }
+  }
+  data[i]='\0';
+}
+
+void AddToSpace(char *str)
+{
+  register int i;
+  
+  for (i=0;str[i];i++)
+    if (str[i]=='+')
+      str[i] = ' ';
+}
+
+
+
+---------------作業07(3) (first.php)--------------
+操作模式：
+  在指令列輸入 vi first.php：用 vi 編輯 first.php 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+
+執行結果：
+  Hello World!
+
+程式碼：
+<!DOCTYPE html>
+<title>Yvaine－UNIX HW07(3) first.php</title>
+<html>
+<body>
+
+<?php
+echo "Hello World!";
+?>
+
+</body>
+</html>
+
+
+
+---------作業08(1) (後端版 Shell shgcd.cgi)-------
+操作模式：
+  在指令列輸入 vi shgcd.cgi：用 vi 編輯 shgcd.cgi 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+
+執行結果：
+  第一組：4
+  第二組：12
+  gcd(4, 12) = 4
+  lcm(4, 12) = 12
+
+程式碼：
+#!/bin/bash
+echo "Content-type: text/html"
+echo ""
+echo '<html>'
+echo '<head>'
+echo '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'
+echo '<title>Yvaine－UNIX HW08(1) 後端版 Shell shgcd.cgi</title>'
+echo '</head>'
+echo '<body>'
+saveIFS=$IFS
+IFS='=&'
+parm=($QUERY_STRING)
+IFS=$saveIFS
+
+num1=${parm[1]}
+num2=${parm[3]}
+n1=$num1
+n2=$num2
+while [ "$num2" != "0" ]
+do
+	r=$(($num1%$num2))
+	num1=$num2
+	num2=$r
+done
+n1=$(($n1*$n2/$num1))
+
+echo "gcd(${parm[1]}, ${parm[3]}) = $num1"
+echo '<br>'
+echo "lcm(${parm[1]}, ${parm[3]}) = $n1"
+echo '</body>'
+echo '</html>'
+exit 0
+
+
+
+----------------作業08(2) (gcd.php)---------------
+操作模式：
+  在指令列輸入 vi gcd.php：用 vi 編輯 gcd.php 檔
+  用 vi 編輯(i、x)程式碼，存檔之後離開(:wq!)
+
+執行結果：
+  第一組：4
+  第二組：12
+  gcd(4, 12) = 4
+  lcm(4, 12) = 12
+
+程式碼：
+<!DOCTYPE html>
+<title>Yvaine－UNIX HW08(2) gcd.php</title>
+<html>
+<body>
+
+<?php
+$x = $_POST['x'];
+$y = $_POST['y'];
+if ($x > 0 && $y > 0) {
+    // Function to return GCD of two numbers
+    function gcd($x, $y) {
+        if($y == 0)
+            return $x;
+        return gcd($y, $x % $y);
+    }
+    
+    // Function to return LCM of two numbers
+    function lcm($x, $y) {
+        return ($x * $y) / gcd($x, $y);
+    }
+    echo "gcd($x, $y) = ", gcd($x, $y);
+    echo "<br>";
+    echo "lcm($x, $y) = ", lcm($x, $y);
+}
+else {
+    echo "請輸入正整數<BR>";
+    echo "備註：正整數為大於 0 的整數";
+}
+?>
+
+</body>
+</html>
+
+
+
+
+-----------------作業 history.txt-----------------
+操作模式：
+  cat .bash_history >> history.txt
+  ls -l >> history.txt (cd HOME、public_html、public_html/cgi-bin)
+
+執行結果：
+  產生 history.txt：以長格式顯示目錄下所有檔案（檔名外、檔案屬性及擁有者、檔案大小、建立時間等）、執行指令
